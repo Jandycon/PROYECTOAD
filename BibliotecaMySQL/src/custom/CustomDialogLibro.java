@@ -1,0 +1,149 @@
+package custom;
+
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.geom.RoundRectangle2D;
+import javax.swing.BorderFactory;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JDialog;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
+import javax.swing.border.EmptyBorder;
+import javax.swing.table.DefaultTableModel;
+
+import design.GradientPanel;
+import objeto.Libro;
+import objetoImp.AtacanteBDImp;
+
+@SuppressWarnings("serial")
+public class CustomDialogLibro extends JDialog{
+	
+	private int nrow;	
+	private Libro libroMod;	
+	private Libro libroSelec;
+	private JPanel contentPane;
+	private AtacanteBDImp atacanteImp;
+	private JButton btnmod, btncancel;
+	private DefaultTableModel modeltabla;
+	private JTextField jtisbn,jtitulo, jtautor, jtedi, jtasig;
+	private JComboBox<String> combo = new JComboBox<String>(Mine.ESTADOS);
+	
+	public void prepararGUI() {				
+		contentPane= new GradientPanel(Mine.FAVCOLORORANGE,Mine.FAVCOLORBLACK);
+		contentPane.setLayout(new GridLayout(7,7,15,15));
+		contentPane.setBorder(new EmptyBorder(20, 20, 20, 20));
+				
+		setSize(400, 300);		
+		setUndecorated(true);		
+		setLocationRelativeTo(null);
+		setContentPane(contentPane);
+		setShape(new RoundRectangle2D.Double(0, 0, getWidth(), getHeight(), 20, 20));
+		getRootPane().setBorder(BorderFactory.createMatteBorder(10, 10, 10, 10, Color.white));
+		setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+		setVisible(true);
+	}
+	
+	public void agregarElementos() {
+		JLabel lblisbn = Mine.lblForPanel("ISBN");		
+		JLabel lbltitulo = Mine.lblForPanel("Título");
+		JLabel lblautor = Mine.lblForPanel("Autor");
+		JLabel lbledi = Mine.lblForPanel("Editorial");
+		JLabel lblasig = Mine.lblForPanel("Asignatura");
+		JLabel lblestado = Mine.lblForPanel("Estado");
+		
+		jtisbn = Mine.jtForPanel(300);	
+		jtitulo = Mine.jtForPanel(300);	
+		jtautor = Mine.jtForPanel(300);	
+		jtedi = Mine.jtForPanel(300);		
+		jtasig = Mine.jtForPanel(300);	
+					
+		jtisbn.setEditable(false);
+		jtisbn.setText(this.libroSelec.getIsbn());
+		jtitulo.setText(this.libroSelec.getTitulo());
+		jtautor.setText(this.libroSelec.getAutor());
+		jtedi.setText(this.libroSelec.getEditorial());
+		jtasig.setText(this.libroSelec.getAsignatura());			
+				
+		combo.setPreferredSize(new Dimension(200,20));
+		combo.setMaximumSize(combo.getPreferredSize());
+		combo.setAlignmentX( Component.LEFT_ALIGNMENT);
+		combo.setOpaque(true);
+		combo.setSelectedItem(this.libroSelec.getEstado());
+		
+		btnmod= Mine.btnForPanel("Modificar");
+		btncancel= Mine.btnForPanel("Cancelar");
+		
+		contentPane.add(lblisbn);
+		contentPane.add(jtisbn);	
+		contentPane.add(lbltitulo);
+		contentPane.add(jtitulo);
+		contentPane.add(lblautor);
+		contentPane.add(jtautor);
+		contentPane.add(lbledi);
+		contentPane.add(jtedi);
+		contentPane.add(lblasig);
+		contentPane.add(jtasig);
+		contentPane.add(lblestado);
+		contentPane.add(combo);
+		contentPane.add(btnmod);
+		contentPane.add(btncancel);		
+	}	
+	
+	public void controlEvents() {
+		btnmod.addActionListener(modificar());
+		btncancel.addActionListener(cancelar());
+	}
+	
+	public ActionListener modificar() {
+		ActionListener esteMetodo = new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				String jt1 = jtisbn.getText();
+				String jt2 = jtitulo.getText();
+				String jt3 = jtautor.getText();
+				String jt4 = jtedi.getText();
+				String jt5 = jtasig.getText();
+				String est = (String)combo.getSelectedItem();
+				libroMod = new Libro(jt1, jt2, jt3, jt4, jt5, est);	
+				
+				//Actualizamos en la base de datos
+				atacanteImp.actualizarLibro(libroMod);			
+				
+				//Actualizamos en la tabla
+				modeltabla.setValueAt(libroMod.getIsbn(), nrow, 0);
+				modeltabla.setValueAt(libroMod.getTitulo(), nrow, 1);
+				modeltabla.setValueAt(libroMod.getAutor(), nrow, 2);
+				modeltabla.setValueAt(libroMod.getEditorial(), nrow, 3);
+				modeltabla.setValueAt(libroMod.getAsignatura(), nrow, 4);
+				modeltabla.setValueAt(libroMod.getEstado(), nrow, 5);
+				
+				dispose();
+			}
+		};
+		return esteMetodo;
+	}
+	
+	public ActionListener cancelar() {
+		ActionListener esteMetodo = new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				dispose();				
+			}
+		};
+		return esteMetodo;
+	}
+		
+	public CustomDialogLibro(Libro libroSelec, AtacanteBDImp atacanteImp, DefaultTableModel modeltabla, int nrow) {	
+		this.libroSelec=libroSelec;
+		this.atacanteImp=atacanteImp;
+		this.modeltabla=modeltabla;
+		this.nrow=nrow;
+		prepararGUI();
+		agregarElementos();		
+		controlEvents();
+	}	
+}

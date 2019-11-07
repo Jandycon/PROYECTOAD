@@ -1,0 +1,49 @@
+La aplicacion tiene las siguientes funcionalidades en:
+    Login:
+        La aplicación verifica si el usuario puede entrar a la base de datos.
+        Recomendación: usar el usuario root -contraseña vacía.
+    
+    Pestaña Gestión de libro:
+        La tabla tiene un listener, la cual rellena el campo isbn para facilitar.
+        la eliminación de un libro.
+
+        Al hacer doble click sobre alguna de las tuplas de la tabla se podrá modificar directamente el libro.       
+
+        Botones eliminar/agregar/grabar deshabilitados.   
+        
+        El boton agregar se habilitará :
+            -cuando el isbn sea valido(entre 9 y 13 caracteres)
+            -cuando los campos esten rellenados y el estado sea diferente al que viene por defecto(Estado).
+    
+        El boton borrar se habilitara cuando se seleccione de la tabla una linea, rellenando el campo isbn.
+        Al eliminar verificará si el isbn existe en la tabla.
+
+        El boton aceptar verifica si se han efectuado cambios, si hay cambios se habilitara el boton grabar.
+
+        El boton rechazar hace un rollback si no se han grabado los cambios.
+
+        Al grabar, se reflejaran todos los cambios hechos en la tabla en la base de datos. Tambien se reflejaran los cambios en la tabla de la pestaña prestamo.
+
+    Pestaña Gestión de alumno:
+        Tiene las mismas funcionalidades de la tabla libro.
+        El campo DNI verificará si el DNI es válido o no, además de verificar que sean 8 carácteres y 1 letra mayúscula.
+        Los campos deberán ser rellenados para habilitar la funcion de agregar alumno.
+        Los cambios serán reflejados en la prestaña prestamo.
+           
+    Pestaña Gestión de prestamos:
+        Las tablas tienen un listener dinamico que sigue a la entrada de carácteres ingresados en los JTextField ISBN y ALUMNO.
+        Al seleccionar un alumno y un libro, el botón Prestar Libro se habilitará.
+        Un libro no se puede prestar a varios alumnos pero un alumno puede pedir prestado varios libros.
+        Al prestar un libro se toma la fecha de ese instante como fecha_de_prestamo y tiene un plazo de 20 días para devolverlos.
+    
+    Pestaña Gestión de devoluciones:
+        Al devolver un libro se tomará como fecha_devolucion, la fecha de entonces.
+        Al clickear sobre generar historial, se ejecuta un procedimiento almacenado que recoge todas las devoluciones. Además de generar un fichero llamado "devoluciones.csv".
+
+    Salir:
+    Saldra de la gestion de biblioteca sin cerrar el login, por si se decide cambiar de usuario.
+        
+        
+
+        
+    

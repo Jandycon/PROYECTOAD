@@ -1,0 +1,52 @@
+package conexiones;
+
+import javax.sql.DataSource;
+import org.apache.commons.dbcp.BasicDataSource;
+import org.sqlite.SQLiteDataSource;
+
+public class Pool {
+	//Atributos para la conexion de sqlite
+	public DataSource dataSource;
+    public String dbsqlite = "biblioteca.sqlite";
+    public String liteDir = System.getProperty("user.dir")+"/sqlite/";
+    public String urllite = "jdbc:sqlite:"+liteDir+dbsqlite;
+    
+    //Atributos para la conexcion de mysql
+    public String db = "biblioteca";
+    public String url = "jdbc:mysql://localhost/"+db;
+    public String user;
+    public String pass;
+    
+    //Constructor vacio para sqlite
+    public Pool() {
+    	try {
+    		inicializaSQLiteDataSource();
+		} catch (ClassNotFoundException e) {
+			System.out.println("Error en inicializarDataSource");
+		}
+    }
+    
+    //Constructor con 2 parametros para mysql
+    public Pool(String usuario, String pass){
+    	this.user=usuario;
+    	this.pass=pass;
+    	inicializaMySQLDataSource();
+    }
+    
+    private void inicializaMySQLDataSource(){
+        BasicDataSource basicDataSource = new BasicDataSource();
+        basicDataSource.setDriverClassName("com.mysql.jdbc.Driver");
+        basicDataSource.setUsername(user);
+        basicDataSource.setPassword(pass);
+        basicDataSource.setUrl(url);
+        basicDataSource.setMaxActive(50);
+        dataSource = basicDataSource;
+    }
+    
+    private void inicializaSQLiteDataSource() throws ClassNotFoundException{
+    	Class.forName("org.sqlite.JDBC");
+        SQLiteDataSource basicDataSource = new SQLiteDataSource();       
+        basicDataSource.setUrl(url);
+        dataSource = basicDataSource;
+    }
+}
