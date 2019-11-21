@@ -60,7 +60,7 @@ public class Mine {
 	
 	public static JTable tablaForPanel(DefaultTableModel modeltabla) {
 		JTable estaTabla = new JTable(modeltabla);
-		estaTabla.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+		estaTabla.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
 		estaTabla.setBorder(null);        
 		estaTabla.setRowHeight(30);
 		estaTabla.setIntercellSpacing(new Dimension(0, 0));
